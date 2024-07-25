@@ -1,6 +1,8 @@
 import { getElementSize } from './dom_utils';
 import './style.scss'
 import * as THREE from "three";
+import WebGPURenderer from 'three/examples/jsm/renderers/webgpu/WebGPURenderer.js';
+import { MeshStandardNodeMaterial, vec4 } from 'three/examples/jsm/nodes/Nodes.js';
 
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `<section class="p-section-first"></section>`;
@@ -18,7 +20,7 @@ const {width,height}=getElementSize(sectionFirst);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new WebGPURenderer();
 renderer.setSize( width, height );
 renderer.setAnimationLoop( animate );
 sectionFirst.appendChild( renderer.domElement );
@@ -27,9 +29,12 @@ sectionFirst.appendChild( renderer.domElement );
 
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshStandardMaterial( { color: 0x00ff00 } );
+const material = new MeshStandardNodeMaterial( { color: 0x00ff00 } );
 const cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
+
+const colorNode=vec4(1,0,0,1);
+material.colorNode=colorNode;
 
 camera.position.z = 5;
 
