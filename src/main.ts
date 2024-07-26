@@ -1,14 +1,15 @@
 import { getElementSize } from './dom_utils';
 import './style.scss'
-import * as THREE from "three";
-import WebGPURenderer from 'three/examples/jsm/renderers/webgpu/WebGPURenderer.js';
-import { MeshStandardNodeMaterial, timerGlobal, tslFn, float,uv,vec4, positionLocal, texture } from 'three/examples/jsm/nodes/Nodes.js';
+// import * as THREE from "three";
+declare module "three/webgpu"{
+  export const loop: (params:{start:number,end:number}, method: ({}:{i:number}) => void) => void;
 
-/// <reference path="./three-more.d.ts" />
-import { loop/*,Break,Continue*/ } from 'three/examples/jsm/nodes/utils/LoopNode.js';
+  export const Break: () => void;
+  export const Continue: () => void;
+}
+import * as THREE from 'three/webgpu';
 
-
-
+const { timerGlobal, tslFn, float,uv,vec4, positionLocal, texture,loop } =THREE;
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `<section class="p-section-first"></section>`;
 
@@ -25,7 +26,7 @@ const {width,height}=getElementSize(sectionFirst);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
 
-const renderer = new WebGPURenderer();
+const renderer = new THREE.WebGPURenderer();
 renderer.setSize( width, height );
 renderer.setAnimationLoop( animate );
 sectionFirst.appendChild( renderer.domElement );
@@ -39,7 +40,7 @@ uvTexture.wrapT = THREE.RepeatWrapping;
 
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new MeshStandardNodeMaterial( { color: 0x00ff00 } );
+const material = new THREE.MeshStandardNodeMaterial( { color: 0x00ff00 } );
 const cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
 
