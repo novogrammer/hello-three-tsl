@@ -1,6 +1,11 @@
 import { getElementSize } from './dom_utils';
-import { makeMyColorNode } from './my_nodes';
+// import { makeMyColorNode } from './makeMyColorNode';
+import { makeKaleidoscopeColorNode } from './makeKaleidoscopeColorNode.ts';
+
 import './style.scss'
+
+
+import "./three-more.d.ts";
 import * as THREE from 'three/webgpu';
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `<section class="p-section-first"></section>`;
 
@@ -17,7 +22,9 @@ const {width,height}=getElementSize(sectionFirst);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
 
-const renderer = new THREE.WebGPURenderer();
+const renderer = new THREE.WebGPURenderer({
+  forceWebGL:true,
+});
 renderer.setSize( width, height );
 renderer.setAnimationLoop( animate );
 sectionFirst.appendChild( renderer.domElement );
@@ -30,7 +37,7 @@ uvTexture.wrapS = THREE.RepeatWrapping;
 uvTexture.wrapT = THREE.RepeatWrapping;
 
 
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const geometry = new THREE.BoxGeometry( 4, 4, 4 );
 const material = new THREE.MeshStandardNodeMaterial( { color: 0x00ff00 } );
 const cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
@@ -38,7 +45,8 @@ scene.add( cube );
 
 
 
-material.colorNode=makeMyColorNode(uvTexture);
+// material.colorNode=makeMyColorNode(uvTexture);
+material.colorNode=makeKaleidoscopeColorNode(uvTexture);
 
 camera.position.z = 5;
 
@@ -71,8 +79,8 @@ function onResize(){
 
 function animate() {
 
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  cube.rotation.x += 0.003;
+  cube.rotation.y += 0.003;
 
   renderer.render( scene, camera );
 
