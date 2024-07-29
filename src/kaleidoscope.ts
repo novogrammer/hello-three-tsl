@@ -1,4 +1,4 @@
-import { getElementSize } from './dom_utils';
+import { getElementSize } from './dom_utils.ts';
 // import { makeMyColorNode } from './makeMyColorNode';
 import { makeKaleidoscopeColorNode } from './makeKaleidoscopeColorNode.ts';
 
