@@ -8,6 +8,8 @@ declare module "three/webgpu"{
 
   // overwrite
   export const If: (boolNode: THREE.Node, method: () => void) => THREE.ShaderNodeObject<THREE.Node>;
+  export function tslFn<R extends Node = ShaderNodeObject<Node>>(jsFunc: () => void): () => R;
+
 }
 
 

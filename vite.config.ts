@@ -14,6 +14,7 @@ export default defineConfig({
       input: {
         index: resolve(__dirname, 'index.html'),
         kaleidoscope: resolve(__dirname, 'kaleidoscope.html'),
+        webgpu_compute_points: resolve(__dirname, 'webgpu_compute_points.html'),
       },
     },
   },
