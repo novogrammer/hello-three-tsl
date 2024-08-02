@@ -1,5 +1,7 @@
 # Hello three.js TSL
 
+TSLを試す。three.jsのexamplesを元に試したりもする。
+
 demo https://novogrammer.github.io/hello-three-tsl/
 
 

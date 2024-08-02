@@ -4,6 +4,7 @@ import './style.scss'
 const linkList:string[]=[
   "kaleidoscope.html",
   "webgpu_compute_points.html",
+  "webgpu_compute_audio.html",
 ]
 
 const appElement=document.querySelector<HTMLDivElement>('#app');
