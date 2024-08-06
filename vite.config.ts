@@ -16,6 +16,7 @@ export default defineConfig({
         kaleidoscope: resolve(__dirname, 'kaleidoscope.html'),
         webgpu_compute_points: resolve(__dirname, 'webgpu_compute_points.html'),
         webgpu_compute_audio: resolve(__dirname, 'webgpu_compute_audio.html'),
+        webgpu_postprocessing_transition: resolve(__dirname, 'webgpu_postprocessing_transition.html'),
       },
     },
   },

@@ -5,6 +5,7 @@ const linkList:string[]=[
   "kaleidoscope.html",
   "webgpu_compute_points.html",
   "webgpu_compute_audio.html",
+  "webgpu_postprocessing_transition.html",
 ]
 
 const appElement=document.querySelector<HTMLDivElement>('#app');
