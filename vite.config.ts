@@ -17,6 +17,7 @@ export default defineConfig({
         webgpu_compute_points: resolve(__dirname, 'webgpu_compute_points.html'),
         webgpu_compute_audio: resolve(__dirname, 'webgpu_compute_audio.html'),
         webgpu_postprocessing_transition: resolve(__dirname, 'webgpu_postprocessing_transition.html'),
+        simple_postprocessing: resolve(__dirname, 'simple_postprocessing.html'),
       },
     },
   },

@@ -6,6 +6,7 @@ const linkList:string[]=[
   "webgpu_compute_points.html",
   "webgpu_compute_audio.html",
   "webgpu_postprocessing_transition.html",
+  "simple_postprocessing.html",
 ]
 
 const appElement=document.querySelector<HTMLDivElement>('#app');
