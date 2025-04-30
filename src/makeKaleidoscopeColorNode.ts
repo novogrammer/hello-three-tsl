@@ -1,11 +1,9 @@
-import "./three-more.d.ts";
 import * as THREE from 'three/webgpu';
-
-const { tslFn, float, vec2, vec3, mat3, dot, texture, sin, cos, atan2, uv, timerGlobal, radians, mod, length, sqrt, If } = THREE;
+import {Fn, float, vec2, vec3, mat3, dot, texture, sin, cos, atan2, uv, timerGlobal, radians, mod, length, sqrt, If,ShaderNodeObject} from 'three/tsl';
 
 // from my shadertoy https://www.shadertoy.com/view/ltGGRW
 
-const len2 = tslFn(([v_immutable]: [THREE.Node]): THREE.ShaderNodeObject<THREE.Node> => {
+const len2 = Fn(([v_immutable]: [THREE.Node]): ShaderNodeObject<THREE.Node> => {
   const v = vec2(v_immutable).toVar();
   return dot(v, v);
 });
@@ -13,7 +11,7 @@ const len2 = tslFn(([v_immutable]: [THREE.Node]): THREE.ShaderNodeObject<THREE.N
 
 // Get the rotation matrix from an axis and an angle (in radians)
 
-const rotationAxisAngle = tslFn(([v_immutable, a_immutable]: [THREE.Node, THREE.Node]): THREE.ShaderNodeObject<THREE.Node> => {
+const rotationAxisAngle = Fn(([v_immutable, a_immutable]: [THREE.Node, THREE.Node]): ShaderNodeObject<THREE.Node> => {
   const v = vec3(v_immutable).toVar();
   const a = float(a_immutable).toVar();
   const si = sin(a).toVar();
@@ -36,12 +34,12 @@ const rotationAxisAngle = tslFn(([v_immutable, a_immutable]: [THREE.Node, THREE.
 
 
 
-const rotateCoord = tslFn(([coord, rotation]: [THREE.Node, THREE.Node]): THREE.ShaderNodeObject<THREE.Node> => {
+const rotateCoord = Fn(([coord, rotation]: [THREE.Node, THREE.Node]): ShaderNodeObject<THREE.Node> => {
   return rotationAxisAngle(vec3(0, 0, 1), rotation).toVar().mul(vec3(coord, 1)).xy;
 });
 
 
-const repeatCoordHex = tslFn(([coord_immutable, unitLength_immutable]: [THREE.Node, THREE.Node]): THREE.ShaderNodeObject<THREE.VarNode> => {
+const repeatCoordHex = Fn(([coord_immutable, unitLength_immutable]: [THREE.Node, THREE.Node]): ShaderNodeObject<THREE.VarNode> => {
 
   const unitLength = float(unitLength_immutable).toVar();
   const coord = vec2(coord_immutable).toVar();
@@ -92,7 +90,7 @@ const repeatCoordHex = tslFn(([coord_immutable, unitLength_immutable]: [THREE.No
 
 });
 
-const calcCoord = tslFn(([coord_immutable]: [THREE.Node]): THREE.ShaderNodeObject<THREE.Node> => {
+const calcCoord = Fn(([coord_immutable]: [THREE.Node]): ShaderNodeObject<THREE.Node> => {
   const coord = vec2(coord_immutable).toVar();
 
   const l = length(coord);

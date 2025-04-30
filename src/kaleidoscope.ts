@@ -5,8 +5,7 @@ import { makeKaleidoscopeColorNode } from './makeKaleidoscopeColorNode.ts';
 import './style.scss'
 
 
-import "./three-more.d.ts";
-import * as THREE from 'three/webgpu';
+import * as THREE from "three/webgpu";
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `<section class="p-section-first"></section>`;
 
 

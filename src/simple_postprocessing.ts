@@ -5,10 +5,9 @@ import { makeKaleidoscopeColorNode } from './makeKaleidoscopeColorNode.ts';
 import './style.scss'
 
 
-import "./three-more.d.ts";
-import * as THREE from 'three/webgpu';
+import * as THREE from "three/webgpu";
+import {pass,vec4} from 'three/tsl';
 
-const {pass,vec4}=THREE;
 
 // // @ts-ignore
 // const {invert}=THREE;

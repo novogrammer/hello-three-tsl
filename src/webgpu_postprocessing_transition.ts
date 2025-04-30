@@ -3,13 +3,12 @@ import { getElementSize } from './dom_utils.ts';
 import './style.scss'
 
 
-import "./three-more.d.ts";
 import * as THREE from 'three/webgpu';
+import {uniform,  pass} from 'three/tsl';
+
 import TWEEN from "@tweenjs/tween.js";
 import GUI from "lil-gui";
-
-const { uniform, transition, pass } = THREE;
-
+import { transition } from 'three/examples/jsm/tsl/display/TransitionNode.js';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `<section class="p-section-first"></section>`;
 

@@ -3,12 +3,9 @@ import { getElementSize } from './dom_utils.ts';
 import './style.scss'
 
 
-import "./three-more.d.ts";
 import * as THREE from 'three/webgpu';
-
+import {Fn, uniform, storage, storageObject, instanceIndex, float, texture, viewportTopLeft, color,ShaderNodeObject} from 'three/tsl';
 import GUI from "lil-gui";
-
-const { tslFn, uniform, storage, storageObject, instanceIndex, float, texture, viewportTopLeft, color } = THREE;
 
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `<section class="p-section-first"></section><div id="overlay"><button id="startButton">Play</button></div>`;
@@ -100,7 +97,7 @@ async function init() {
 
   // compute (shader-node)
 
-  const computeShaderFn = tslFn( () => {
+  const computeShaderFn = Fn( () => {
 
     const index = float( instanceIndex );
 
@@ -108,7 +105,7 @@ async function init() {
 
     const time = index.mul( pitch );
 
-    let wave:THREE.ShaderNodeObject<THREE.Node> = waveNode.element( time );
+    let wave:ShaderNodeObject<THREE.Node> = waveNode.element( time );
 
 
     // delay
@@ -167,7 +164,7 @@ async function init() {
   // scene
 
   scene = new THREE.Scene();
-  (scene as any).backgroundNode = backgroundNode;
+  scene.backgroundNode = backgroundNode;
 
   // renderer
 

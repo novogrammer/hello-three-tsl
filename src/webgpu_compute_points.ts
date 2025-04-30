@@ -3,12 +3,9 @@ import { getElementSize } from './dom_utils.ts';
 import './style.scss'
 
 
-import "./three-more.d.ts";
 import * as THREE from 'three/webgpu';
-
+import {Fn, uniform, instancedArray, float, vec2, vec3, color, instanceIndex} from 'three/tsl';
 import GUI from "lil-gui";
-
-const { tslFn, uniform, storage, attribute, float, vec2, vec3, color, instanceIndex } = THREE;
 
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `<section class="p-section-first"></section>`;
@@ -35,43 +32,38 @@ const scene = new THREE.Scene();
 
 // initialize particles
 
-const particleNum = 300000;
-const particleSize = 2; // vec2
+const particlesCount = 300000;
+const particleArray = instancedArray( particlesCount, 'vec2' );
+const velocityArray = instancedArray( particlesCount, 'vec2' );
 
-// create buffers
 
-const particleBuffer = new THREE.StorageInstancedBufferAttribute(particleNum, particleSize);
-const velocityBuffer = new THREE.StorageInstancedBufferAttribute(particleNum, particleSize);
-
-const particleBufferNode = storage(particleBuffer, 'vec2', particleNum);
-const velocityBufferNode = storage(velocityBuffer, 'vec2', particleNum);
 // create function
-const computeShaderFn = tslFn(() => {
+const computeShaderFn = Fn(() => {
 
-  const particle = particleBufferNode.element(instanceIndex);
-  const velocity = velocityBufferNode.element(instanceIndex);
+  const particle = particleArray.element(instanceIndex);
+  const velocity = velocityArray.element(instanceIndex);
 
   const pointer = uniform(pointerVector);
   const limit = uniform(scaleVector);
 
-  const position = particle.add(velocity).temp();
+  const position = particle.add(velocity).toVar();
 
-  velocity.x = position.x.abs().greaterThanEqual(limit.x).cond(velocity.x.negate(), velocity.x);
-  velocity.y = position.y.abs().greaterThanEqual(limit.y).cond(velocity.y.negate(), velocity.y);
+  velocity.x = position.x.abs().greaterThanEqual( limit.x ).select( velocity.x.negate(), velocity.x );
+  velocity.y = position.y.abs().greaterThanEqual( limit.y ).select( velocity.y.negate(), velocity.y );
 
   position.assign(position.min(limit).max(limit.negate()));
 
   const pointerSize = 0.1;
   const distanceFromPointer = pointer.sub(position).length();
 
-  particle.assign(distanceFromPointer.lessThanEqual(pointerSize).cond(vec3(), position));
+  particle.assign( distanceFromPointer.lessThanEqual( pointerSize ).select( vec3(), position ) );
 
 });
 
-let computeNode = (computeShaderFn() as any).compute(particleNum) as THREE.ComputeNode;
-(computeNode as any).onInit = ({ renderer }: { renderer: THREE.Renderer }) => {
+let computeNode = computeShaderFn().compute(particlesCount);
+computeNode.onInit( ({ renderer }: { renderer: THREE.Renderer }) => {
 
-  const precomputeShaderNode = tslFn(() => {
+  const precomputeShaderNode = Fn(() => {
 
     const particleIndex = float(instanceIndex);
 
@@ -81,31 +73,29 @@ let computeNode = (computeShaderFn() as any).compute(particleNum) as THREE.Compu
     const velX = randomAngle.sin().mul(randomSpeed);
     const velY = randomAngle.cos().mul(randomSpeed);
 
-    const velocity = velocityBufferNode.element(instanceIndex);
+    const velocity = velocityArray.element(instanceIndex);
 
     velocity.xy = vec2(velX, velY);
 
   });
 
-  renderer.compute(precomputeShaderNode().compute(particleNum));
+  // renderer.compute(precomputeShaderNode().compute(particlesCount));
+  renderer.computeAsync( precomputeShaderNode().compute( particlesCount ) );
 
-};
+});
 
 // use a compute shader to animate the point cloud's vertex data.
 
-const particleNode = attribute('particle', 'vec2');
-
 const pointsGeometry = new THREE.BufferGeometry();
 pointsGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3)); // single vertex ( not triangle )
-pointsGeometry.setAttribute('particle', particleBuffer); // dummy the position points as instances
 pointsGeometry.drawRange.count = 1; // force render points as instances ( not triangle )
 
 const pointsMaterial = new THREE.PointsNodeMaterial();
-pointsMaterial.colorNode = particleNode.add(color(0xFFFFFF));
-pointsMaterial.positionNode = particleNode;
+pointsMaterial.colorNode = particleArray.element( instanceIndex ).add( color( 0xFFFFFF ) );
+pointsMaterial.positionNode = particleArray.element( instanceIndex );;
 
 const mesh = new THREE.Points(pointsGeometry, pointsMaterial);
-(mesh as any).count = particleNum;
+mesh.count = particlesCount;
 scene.add(mesh);
 
 const renderer = new THREE.WebGPURenderer({
@@ -156,8 +146,8 @@ function onMouseMove(event: MouseEvent) {
 }
 
 function animate() {
-
   renderer.compute(computeNode);
+  renderer.resolveTimestampsAsync( THREE.TimestampQuery.COMPUTE );
   renderer.render(scene, camera);
 
 }
